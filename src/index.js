@@ -3,13 +3,36 @@ const client = new Discord.Client();
 const axios = require('axios');
 
 const MusicController = require('./musicColtroller');
-const msControl = new MusicController();
+
 
 require('dotenv').config();
 
 client.on('ready', () =>{
     console.log('Bot is Running');
 });
+
+let listChannel = [];
+const getControl = channelId =>{
+    if(listChannel.length === 0){
+        const msControl = new MusicController();
+        listChannel.push({
+            id: channelId,
+            control: msControl
+        });
+    }else{
+        if(!listChannel.some(channel => {return channel.id === channelId;})){
+            const msControl = new MusicController();
+            listChannel.push({
+                id: channelId,
+                control: msControl
+            });
+        }
+    }
+
+    let currentChannel = listChannel.filter(channel => {return channel.id === channelId;});
+    return currentChannel[0].control;
+
+};
 
 const getYoutubeVideo = (args) =>{
     if(args.includes('https://')) return args;
@@ -75,7 +98,6 @@ const play  = async (msg, song, msControl) =>{
             
         msg.reply('Éo kiếm ra được m ơi :(( ');
 
-
         msg.reply(err.message);
     }
 };
@@ -110,8 +132,8 @@ client.on('message', async msg =>{
     if(args[0] === '!cc'){
         const command = args[1];
         let value;
-        
         if(args.length > 2){
+
             value = args.filter((val, index) =>{
                 return index >= 2;
             });
@@ -123,24 +145,25 @@ client.on('message', async msg =>{
             case 'play':
                 if(msg.member.voice.channel){
                     if(value){
-                        play(msg, value, msControl);    
+                        console.log(getControl(msg.channel.id));
+                        play(msg, value, getControl(msg.channel.id));    
                     }else msg.reply('Cho đệ xin cái link hoặc tên bài :))))');  
                 }else msg.reply('Vô room đi con đủy chó !!!');
                 break;
             case 'pause':
-                pause(msControl, msg); 
+                pause(getControl(msg.channel.id), msg); 
                 break;
             case 'resume':
-                resume(msControl, msg);
+                resume(getControl(msg.channel.id), msg);
                 break;
             case 'skip': 
-                skip(msControl, msg);
+                skip(getControl(msg.channel.id), msg);
                 break;
             case 'stop':
-                stop(msControl, msg);
+                stop(getControl(msg.channel.id), msg);
                 break;
             case 'wait':
-                msg.reply(`Còn ${msControl.getQueue()} bài nha tml*`);
+                msg.reply(`Còn ${getControl(msg.channel.id).getQueue()} bài nha tml*`);
                 break;
             case 'giphy':
                 displayGiphy(msg);
