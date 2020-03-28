@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-//const ytdl = require('ytdl-core');
+const axios = require('axios');
+
 
 const MusicController = require('./musicColtroller');
 const msControl = new MusicController();
@@ -11,20 +12,48 @@ client.on('ready', () =>{
     console.log('Bot is Running');
 });
 
-
+const getYoutubeVideo = (args) =>{
+    if(args.includes('https://')) return args;
+    let songName = encodeURI(args);
+    return new Promise((reslove, reject) =>{
+        axios.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=8&q=${songName}&key=${process.env.YT_TOKEN}`)
+            .then(res => {
+                if(res.data)
+                    reslove(`https://www.youtube.com/watch?v=${res.data.items[0].id.videoId}`); 
+                else
+                    reject('Ko tim thay')
+            })
+            .catch(err => reject(err));   
+    }); 
+    
+};
 
 const play  = async (msg, song, msControl) =>{
-    
-    const connection = await msg.member.voice.channel.join();
-    msControl.setConnection(connection);
-    if(msControl.getSongCount() >= 1){
-        msControl.setSong(song);
-        msg.reply(`Hàng đợi thứ ${msControl.getQueue()}`);
-        return;
+    try{
+        const url = await getYoutubeVideo(song);
+        const connection = await msg.member.voice.channel.join();
+        msControl.setConnection(connection);
+        if(msControl.getSongCount() >= 1){
+            msg.reply(url);
+            msControl.setSong(url);
+            msg.reply(`Hàng đợi thứ ${msControl.getQueue()}`);
+            return;
+        }
+        
+        msg.reply(url);
+        msControl.setSong(url);
+        msControl.play();
+
+    }catch(err){
+            
+        msg.reply('Éo kiếm ra được m ơi :(( ');
+
+
+        msg.reply(err.message);
     }
+    /* 
     
-    msControl.setSong(song);
-    msControl.play();
+        */
 };
 
 const skip = (msControl, msg) =>{
@@ -55,13 +84,19 @@ const resume = (msControl, msg) =>{
 
 client.on('message', async msg =>{
     if(!msg.guild) return;
-    const args = msg.content.split(' ');
+    let args = msg.content.split(' ');
 
     if(args[0] === '!ccgang'){
         const command = args[1];
-        const value = args[2];
-                        
-       
+        let value;
+        
+        if(args.length > 2){
+            value = args.filter((val, index) =>{
+                return index >= 2;
+            });
+            value = value.join(' ');
+        }else value = args[2];
+
         if(command){
             switch(command){
             case 'play':
