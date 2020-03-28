@@ -8,7 +8,6 @@ module.exports =  class MusicController{
             queue: 0,
             list: []
         };
-        this.message = {};
         this.dispatcher = null;
     }
 
@@ -20,10 +19,6 @@ module.exports =  class MusicController{
     }
     setConnection(connection){
         this.connection = connection;
-    }
-    
-    setMessage(message){
-        this.message = message;
     }
 
     getQueue(){
@@ -54,6 +49,7 @@ module.exports =  class MusicController{
             });
         }else{
             this.dispatcher.destroy();
+            this.dispatcher = null;
             return;
         }
     }
@@ -78,6 +74,7 @@ module.exports =  class MusicController{
         this.songs.list = [];
         this.songs.queue = 0;
         this.dispatcher.destroy();
+        this.dispatcher = null;
     }
 
 

@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const axios = require('axios');
-const cheerio = require('cheerio');
 
 const MusicController = require('./musicColtroller');
 const msControl = new MusicController();
@@ -79,7 +78,7 @@ const play  = async (msg, song, msControl) =>{
 
         msg.reply(err.message);
     }
-}
+};
 
 const skip = (msControl, msg) =>{
     const queue = msControl.getQueue();
@@ -108,7 +107,7 @@ client.on('message', async msg =>{
     if(!msg.guild) return;
     let args = msg.content.split(' ');
 
-    if(args[0] === '!ccgang'){
+    if(args[0] === '!cc'){
         const command = args[1];
         let value;
         
