@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const axios = require('axios');
-
+const cheerio = require('cheerio');
 
 const MusicController = require('./musicColtroller');
 const msControl = new MusicController();
@@ -28,6 +28,34 @@ const getYoutubeVideo = (args) =>{
     
 };
 
+const giphySearch = keyword =>{
+    return new Promise((reslove, reject) =>{
+        axios.get(`https://api.giphy.com/v1/gifs/search?api_key=${process.env.GIPHY_TOKEN}&limit=10&q=${keyword}&lang=en`)
+            .then(res =>{
+                if(res.data){
+                    reslove(res.data.data[0].url);
+                }else
+                    reject(new Error('Éo tìm thấy'));
+            })
+            .catch(err => reject('Éo tìm thấy'));
+    });
+};
+
+const displayGiphy = msg =>{
+    let args = msg.content.split(' ');
+    let keyword;
+    if(args.length > 2)
+        keyword = args.filter((val, index) =>{
+            return index >= 2;
+        }).join(' ');
+    else
+        keyword = msg.content.split(' ')[2];
+
+    giphySearch(keyword)
+        .then(giphyUrl => msg.channel.send(giphyUrl))
+        .catch(err => msg.channel.send(err));
+};
+
 const play  = async (msg, song, msControl) =>{
     try{
         const url = await getYoutubeVideo(song);
@@ -51,10 +79,7 @@ const play  = async (msg, song, msControl) =>{
 
         msg.reply(err.message);
     }
-    /* 
-    
-        */
-};
+}
 
 const skip = (msControl, msg) =>{
     const queue = msControl.getQueue();
@@ -78,9 +103,6 @@ const resume = (msControl, msg) =>{
     if(msControl.getDispatcher()) msControl.resume();
     else msg.reply('Có bài nào đâu mà kêu tao dừng, thứ nứng l* -_-'); 
 };
-
-
-
 
 client.on('message', async msg =>{
     if(!msg.guild) return;
@@ -120,6 +142,9 @@ client.on('message', async msg =>{
                 break;
             case 'wait':
                 msg.reply(`Còn ${msControl.getQueue()} bài nha tml*`);
+                break;
+            case 'giphy':
+                displayGiphy(msg);
                 break;
             default: 
                 msg.reply('Sai Lệnh Rồi Thằng ml*');
