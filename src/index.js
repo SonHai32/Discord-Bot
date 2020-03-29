@@ -90,7 +90,7 @@ const play  = async (msg, song, msControl) =>{
             return;
         }
         
-        msg.reply(url);
+        msg.channel.send(url);
         msControl.setSong(url);
         msControl.play();
 
@@ -145,7 +145,6 @@ client.on('message', async msg =>{
             case 'play':
                 if(msg.member.voice.channel){
                     if(value){
-                        console.log(getControl(msg.channel.id));
                         play(msg, value, getControl(msg.channel.id));    
                     }else msg.reply('Cho đệ xin cái link hoặc tên bài :))))');  
                 }else msg.reply('Vô room đi con đủy chó !!!');
