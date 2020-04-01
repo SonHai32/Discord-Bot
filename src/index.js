@@ -173,23 +173,8 @@ client.on('message', async msg =>{
             }
         }else msg.reply('Sai Lệnh Rồi Thằng ml* ' + msg.member.displayName);
     }
-/*
-    if(msg.content.includes('!botcc play')){
-        if(msg.member.voice.channel){
-            const url = msg.content.split(' ')[2];
-            if(url.includes('https://')){
-                
-
-                const connection = await msg.member.voice.channel.join();
-                const msControl = new MusicController(connection, url, msg);
-                //connection.play(ytdl(url, { filter: format => format.container === 'mp4' }));
-                msControl.play(0);
-            }
-            
-        }else{
-            msg.reply('Vào channel đi thằng ml.Bố m biết m ở đâu mà nhảy vào');
-        }
-    }*/
 });
+
+client.on('debug', console.log);
 
 client.login(process.env.MY_TOKEN);

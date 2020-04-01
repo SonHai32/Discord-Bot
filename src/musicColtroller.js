@@ -44,8 +44,11 @@ module.exports =  class MusicController{
                 this.songs.queue--;
                 if(this.songs.list[0]){
                     this.play();
-                }else
+                }else{
                     this.dispatcher.destroy();
+                    this.connection.disconnect();
+                }
+
             });
         }else{
             this.dispatcher.destroy();
