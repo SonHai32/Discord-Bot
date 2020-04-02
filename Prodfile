@@ -1,2 +1,2 @@
-work: node src/index.js
+work: node index.js
 heroku ps:scale web=1

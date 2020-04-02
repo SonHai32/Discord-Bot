@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node index.js",
     "lint": "eslint src/"
   },
   "repository": {
@@ -25,6 +25,7 @@
     "dotenv": "^8.2.0",
     "node-opus": "^0.3.3",
     "request": "^2.88.2",
+    "simple-youtube-api": "^5.2.1",
     "ytdl-core": "^2.0.1",
     "ytdl-core-discord": "^1.1.0"
   },
