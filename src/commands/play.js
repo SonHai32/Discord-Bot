@@ -1,5 +1,5 @@
 require('dotenv').config();
-const ytdl = require('ytdl-core-discord');
+const ytdl = require('ytdl-core');
 const { MessageEmbed } = require('discord.js');
 const Youtube = require('simple-youtube-api');
 const youtube = new Youtube(process.env.YT_TOKEN);
@@ -25,19 +25,14 @@ module.exports = {
             return new Promise((reslove, reject) =>{
                 if(args.includes('https')){
                     if(args.includes('list')){
-                        youtube.getPlaylist(args).then(val => {
+                        return youtube.getPlaylist(args).then(val => {
                             val.getVideos()
                                 .then(videos => reslove(videos))
                                 .catch(err => reject(err));
                         }).catch(err => reject(err));
                     }
-                    return ytdl.getInfo(args.replace(/<(.+)>/g, '$1')).then(info => reslove({
-                        id: info.video_id,
-                        title: info.title,
-                        url: `https://www.youtube.com/watch?v=${info.video_id}`
-                    }));
-
-                }
+                    
+		}
                 youtube.searchVideos(args).then(val =>{
                     reslove({
                         id: val[0].id,
@@ -99,7 +94,7 @@ module.exports = {
                 return;
             }
 
-            const dispatcher = queue.connection.play(await ytdl(song.url, {filter: 'audioonly'}), {type: 'opus'});
+            const dispatcher = queue.connection.play(await ytdl(song.url, {filter: 'audioonly',quality: 'highestaudio',highWaterMark: 1024 * 1024 * 10}));
             
             dispatcher
                 .on('finish', () =>{
