@@ -18,12 +18,14 @@ client.on('message', message =>{
         client.commands.set(command.name, command);
     }
     
-    const content = message.content;
+    let content = message.content;
+
+    if(content === client.config.prefix) content = `${client.config.prefix} help`; 
+
     const args = content.slice(client.config.prefix.length+1).split(/ +/);
 
     const commandName = args.shift().toLowerCase();
     const command = client.commands.get(commandName);
-
     if(!command) return;
     if(command.args && !commandName.length){
         message.channel.send(`${command.name === 'play' ? 'Bài hát đâu ml': command.name === 'giphy' ? 'Tên hình đâu ml' : '' }`);
