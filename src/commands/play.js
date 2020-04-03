@@ -12,12 +12,12 @@ module.exports = {
     async run(message, args){
         const {channel} = message.member.voice;
 
-        if(!channel) return message.channel.send('Vô room đi con đũy');
+        if(!channel) return message.channel.send('```Vô room đi con đũy```');
 
         const permission = channel.permissionsFor(message.client.user);
         
-        if(!permission.has('CONNECT')) return message.channel.send('Không có quyền sao vô đc ba -_- !!!');
-        if(!permission.has('SPEAK')) return message.channel.send('Room cấm nói chuyện kêu t vô hát ăn c* à ml');
+        if(!permission.has('CONNECT')) return message.channel.send('```Không có quyền sao vô đc ba -_- !!!```');
+        if(!permission.has('SPEAK')) return message.channel.send('```Room cấm nói chuyện kêu t vô hát ăn c* à ml```');
         const searchingEmbed = new MessageEmbed().setColor('#00ff7b').setTitle(`:mag_right: :mag_right: :mag_right: ĐANG TÌM *** ${args.includes('https') ? args : args.toUpperCase() } ***`);
         message.channel.send(searchingEmbed);
 

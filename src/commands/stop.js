@@ -5,9 +5,9 @@ module.exports = {
     cooldown: 5,
     run(message){
         const {channel} = message.member.voice;
-        if(!channel) return message.channel.send('Vô room đi con đũy');
+        if(!channel) return message.channel.send('```Vô room đi con đũy```');
         const serverQueue = message.client.queue.get(message.guild.id);
-        if(!serverQueue) return message.channel.send('Có bài nào đâu dừng cha');
+        if(!serverQueue) return message.channel.send('```Có bài nào đâu dừng cha```');
         serverQueue.songs = [];
         serverQueue.connection.dispatcher.end('Stop');
 
