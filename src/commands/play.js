@@ -18,26 +18,25 @@ module.exports = {
         
         if(!permission.has('CONNECT')) return message.channel.send('Không có quyền sao vô đc ba -_- !!!');
         if(!permission.has('SPEAK')) return message.channel.send('Room cấm nói chuyện kêu t vô hát ăn c* à ml');
-
-
+        const searchingEmbed = new MessageEmbed().setColor('#00ff7b').setTitle(`:mag_right: :mag_right: :mag_right: ĐANG TÌM *** ${args.includes('https') ? args : args.toUpperCase() } ***`);
+        message.channel.send(searchingEmbed);
 
         const getYoutubeSong =(args) =>{
             return new Promise((reslove, reject) =>{
-                if(args.includes('https')){
-                    if(args.includes('list')){
-                        return youtube.getPlaylist(args).then(val => {
-                            val.getVideos()
-                                .then(videos => reslove(videos))
-                                .catch(err => reject(err));
-                        }).catch(err => reject(err));
-                    }
-                    
-		}
+                if(args.includes('https') && args.includes('list')){
+                    return youtube.getPlaylist(args).then(val => {
+                        val.getVideos()
+                            .then(videos => reslove(videos))
+                            .catch(err => reject(err));
+                    }).catch(err => reject(err));
+                }
                 youtube.searchVideos(args).then(val =>{
                     reslove({
                         id: val[0].id,
                         title: val[0].title,
-                        url: `https://www.youtube.com/watch?v=${val[0].id}`
+                        url: `https://www.youtube.com/watch?v=${val[0].id}`,
+                        image: val[0].thumbnails.high.url,
+                        description: val[0].description
                     });
                 }).catch(err => reject(err));
             });
@@ -53,11 +52,18 @@ module.exports = {
                     serverQueue.songs.push({
                         id: song.id,
                         title: song.title,
-                        url: `https://www.youtube.com/watch?v=${song.id}`
+                        url: `https://www.youtube.com/watch?v=${song.id}`,
+                        image: song.thumbnails.high.url,
+                        description: song.description
                     });
                 }
-            }else serverQueue.songs.push(songList);
-            return message.channel.send(`${songList.length > 0 ? `Playlist: ${songList[0].title}` : songList.title }  \n đã được thêm vào${serverQueue.playing? `, hàng đợi ${serverQueue.songs.length - 1}` : ` hàng đợi ${serverQueue.songs.length}`}`);
+                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.playing ? serverQueue.songs.length - 1 : serverQueue.songs.length }`);
+                return message.channel.send(songAddedEmbed);
+            }else {
+                serverQueue.songs.push(songList);
+                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Bài Hát : ${songList.title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.playing ? serverQueue.songs.length - 1: serverQueue.songs.length}`);
+                return message.channel.send(songAddedEmbed);
+            }
         }
 
         const queueConstruct = {
@@ -77,14 +83,20 @@ module.exports = {
                 serverQueue.songs.push({
                     id: song.id,
                     title: song.title,
-                    url: `https://www.youtube.com/watch?v=${song.id}`
+                    url: `https://www.youtube.com/watch?v=${song.id}`,
+                    image: song.thumbnails.high.url,
+                    description: song.description
                 });
             }
-        }else serverQueue.songs.push(songList);
+            const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.length}`);
+            message.channel.send(songAddedEmbed);
+        }else{
+            serverQueue.songs.push(songList);
+            const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Bài Hát : ${songList.title}\nĐã được thêm vào`);
+            message.channel.send(songAddedEmbed);
+        }
         
-        const totalSong = serverQueue.songs.length;
 
-        message.channel.send(`${totalSong > 0 ? `Playlist: ${serverQueue.songs[0].title}` : serverQueue.songs.title }  \n đã được thêm vào${serverQueue.playing? `, hàng đợi ${totalSong - 1}` : ` hàng đợi ${totalSong}`}`);
         const play = async song =>{
             const queue = message.client.queue.get(message.guild.id);
 
@@ -103,9 +115,11 @@ module.exports = {
                 })
                 .on('error', err => console.error(err));
 
-            const embed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***PLAY***  :poop: ${song.title} :poop:`);
-            queue.textChannel.send(embed);
-            queue.textChannel.send(song.url);
+            const playEmbed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***>>>PLAYING<<<***  :poop: ${song.title} :poop:`);
+            const songInfoEmbed = new MessageEmbed().setColor('#ff0000').setTitle(song.title).setURL(song.url)
+                .setThumbnail(song.image).setDescription(song.description);
+            queue.textChannel.send(songInfoEmbed);
+            queue.textChannel.send(playEmbed);
         };
     
 
