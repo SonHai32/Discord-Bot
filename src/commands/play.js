@@ -71,7 +71,8 @@ module.exports = {
             textChannel: message.channel,
             voiceChannel: channel,
             songs: [],
-            playing: true
+            playing: true,
+            loop: 0
         };
 
         message.client.queue.set(message.guild.id, queueConstruct);
@@ -110,8 +111,13 @@ module.exports = {
             
             dispatcher
                 .on('finish', () =>{
-                    queue.songs.shift();
-                    play(queue.songs[0]);
+                    if(queue.loop > 0){
+                        play(queue.songs[0]);
+                        queue.loop--;
+                    }else{
+                        queue.songs.shift();
+                        play(queue.songs[0]);
+                    }
                 })
                 .on('error', err => console.error(err));
 

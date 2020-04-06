@@ -18,6 +18,8 @@ module.exports = {
                 {name: 'stop', value: 'stop song and clear all queue'},
                 {name: 'jump /queue number/', value: 'jump to song in queue, ex: jump 20 : jump to song 20 in queue'},
                 {name: 'wait', value: 'show total song in queue'},
+                {name: 'loop /number/', value: 'loop song with index'},
+                {name: 'loop end', value: 'loop end'},
                 {name: 'help', value: 'show help menu'}
             )
             .setTimestamp()
