@@ -89,7 +89,7 @@ module.exports = {
                     description: song.description
                 });
             }
-            const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.length}`);
+            const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.length - 1}`);
             await message.channel.send(songAddedEmbed);
         }else{
             serverQueue.songs.push(songList);
