@@ -112,7 +112,7 @@ module.exports = {
             queue.connection.on('disconnect', async()=> {
                 setTimeout(async() =>{
                     await message.client.queue.delete(message.guild.id); 
-                },5000);
+                },1000);
                 return;
                 
             }); 
