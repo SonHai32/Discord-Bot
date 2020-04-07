@@ -10,10 +10,6 @@ client.on('ready', () =>{
     console.log('Bot is running');
 });
 
-client.on('voiceStateUpdate', (voiceStateBefore, voiceStateAfter) =>{
-    if(voiceStateAfter.channelID === null) return client.queue = new Map();
-    // clear server Queue after bot has been disconected;
-});
 client.on('message', async message =>{
 
     const commands = readdirSync('./src/commands').filter(file => file.endsWith('.js'));

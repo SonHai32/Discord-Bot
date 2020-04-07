@@ -108,7 +108,10 @@ module.exports = {
             }
 
             const dispatcher = queue.connection.play(await ytdl(song.url, {filter: 'audioonly',quality: 'highestaudio',highWaterMark: 1024 * 1024 * 10}));
-            
+            queue.connection.on('disconnect', ()=> {
+                return message.client.queue = new Map(); 
+            }); 
+
             dispatcher
                 .on('finish', () =>{
                     if(queue.loop > 0){
