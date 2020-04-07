@@ -108,8 +108,13 @@ module.exports = {
             }
 
             const dispatcher = queue.connection.play(await ytdl(song.url, {filter: 'audioonly',quality: 'highestaudio',highWaterMark: 1024 * 1024 * 10}));
-            queue.connection.on('disconnect', ()=> {
-                message.client.queue.delete(message.guild.id); 
+
+            queue.connection.on('disconnect', async()=> {
+                setTimeout(async() =>{
+                    await message.client.queue.delete(message.guild.id); 
+                },5000);
+                return;
+                
             }); 
 
             dispatcher
