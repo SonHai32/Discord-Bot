@@ -4,7 +4,7 @@ module.exports = {
     name: 'help',
     cooldown: 1,
     description: 'Show help commands menu',
-    run(message){
+    async run(message){
         const embed  = new MessageEmbed()
             .setColor('#00ffff')
             .setTitle(':x: :x: :x: CC Discord Bot Help Menu :x: :x: :x: ')
@@ -25,7 +25,7 @@ module.exports = {
             .setTimestamp()
             .setFooter('https://github.com/SonHai32/Discord-Bot','https://avatars2.githubusercontent.com/u/48214325?s=60&v=4');
 
-        message.channel.send(embed);
+        await message.channel.send(embed);
 
     }
 };

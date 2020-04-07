@@ -6,10 +6,12 @@ const BotClient = require('./struct/Client');
 const client = new BotClient({token: process.env.MY_TOKEN, prefix: '!cc'});
 
 client.on('ready', () =>{
+    client.user.setPresence({activity: {name: 'music | !cc | Dev: SonHai'}, status: 'online'});
     console.log('Bot is running');
 });
 
-client.on('message', message =>{
+client.on('message', async message =>{
+
     const commands = readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 
     for(const file of commands){
@@ -28,7 +30,7 @@ client.on('message', message =>{
     const command = client.commands.get(commandName);
     if(!command) return;
     if(command.args && !args.join(' ').length){
-        message.channel.send(`${command.name === 'play' ? '```Bài hát đâu ml```': command.name === 'giphy' ? '```Tên hình đâu ml```' : '' }`);
+        await message.channel.send(`${command.name === 'play' ? '```Bài hát đâu ml```': command.name === 'giphy' ? '```Tên hình đâu ml```' : '' }`);
         return;
     }
     
@@ -44,7 +46,7 @@ client.on('message', message =>{
         const totalTime = timestamp.get(message.author.id) + cooldownTime;
         if(now < totalTime){
             const timeLeft = (totalTime - now) / 1000; 
-            return message.channel.send(`Thử lại sau ${timeLeft.toFixed(1)}s`);
+            return await message.channel.send(`Thử lại sau ${timeLeft.toFixed(1)}s`);
         }
     }
 
