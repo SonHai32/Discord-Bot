@@ -122,8 +122,9 @@ module.exports = {
                 .on('error', err => console.error(err));
 
             const playEmbed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***>>>PLAYING<<<***  :poop: ${song.title} :poop:`);
+            const description = `${song.description.length > 300 ? song.description.slice(0,300) + '\n...' : song.description }`;
             const songInfoEmbed = new MessageEmbed().setColor('#ff0000').setTitle(song.title).setURL(song.url)
-                .setThumbnail(song.image).setDescription(song.description);
+                .setThumbnail(song.image).setDescription(description);
             await queue.textChannel.send(songInfoEmbed);
             await queue.textChannel.send(playEmbed);
         };
