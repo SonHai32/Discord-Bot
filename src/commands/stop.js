@@ -9,8 +9,7 @@ module.exports = {
         const serverQueue = message.client.queue.get(message.guild.id);
         if(!serverQueue) return message.channel.send('```Có bài nào đâu dừng cha```');
         serverQueue.songs = [];
-        serverQueue.connection.dispatcher.end('Stop');
-
+        serverQueue.connection.dispatcher.end();
         const embed = new MessageEmbed().setColor('#03fc66').setTitle(':stop_button: :stop_button: :stop_button: STOP !');
         return message.channel.send(embed);
     }

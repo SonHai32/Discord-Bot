@@ -30,7 +30,7 @@ client.on('message', async message =>{
     const command = client.commands.get(commandName);
     if(!command) return;
     if(command.args && !args.join(' ').length){
-        await message.channel.send(`${command.name === 'play' ? '```Bài hát đâu ml```': command.name === 'giphy' ? '```Tên hình đâu ml```' : '' }`);
+        await message.channel.send(`${command.name === 'play' ? '```Bài hát đâu ml```': command.name === 'giphy' ? '```Tên hình đâu ml```' : command.name === 'loop' ? 'Lập mấy lần ml' : '' }`);
         return;
     }
     
