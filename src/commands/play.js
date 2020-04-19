@@ -123,7 +123,7 @@ module.exports = {
                         play(queue.songs[0]);
                     }
                 })
-                .on('error', err => console.error(err));
+                .on('error', err => message.channel.send(err.message));
 
             const playEmbed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***>>>PLAYING<<<***  :poop: ${song.title} :poop:`);
             const description = `${song.description.length > 300 ? song.description.slice(0,300) + '\n...' : song.description }`;
