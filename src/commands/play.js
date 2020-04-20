@@ -102,8 +102,8 @@ module.exports = {
             const queue = message.client.queue.get(message.guild.id);
 
             if(!song){
-                queue.voiceChannel.leave();
-                message.client.queue.delete(message.guild.id);
+                await queue.voiceChannel.leave();
+                await message.client.queue.delete(message.guild.id);
                 return;
             }
 
@@ -123,7 +123,10 @@ module.exports = {
                         play(queue.songs[0]);
                     }
                 })
-                .on('error', err => message.channel.send(err.message));
+                .on('error', err => {
+                    const errorEmbed = new MessageEmbed().setColor('#ff0000').setTitle('!!! ERROR !!!').setDescription(`${err.message} \nPlease contact Developer`);
+                    message.channel.send(errorEmbed);
+                });
 
             const playEmbed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***>>>PLAYING<<<***  :poop: ${song.title} :poop:`);
             const description = `${song.description.length > 300 ? song.description.slice(0,300) + '\n...' : song.description }`;
@@ -141,11 +144,10 @@ module.exports = {
 
 
         }catch(err){
-            console.error(err);
-
             message.client.queue.delete(message.guild.id);
             await channel.leave();
-            message.channel.send(`Lỗi rồi: ${err}`);
+            const errorEmbed = new MessageEmbed().setColor('#ff0000').setTitle('!!! ERROR !!!').setDescription(`${err.message} \nPlease contact Developer`);
+            await message.channel.send(errorEmbed);
         }
 
     }
