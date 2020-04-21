@@ -123,9 +123,13 @@ module.exports = {
                         play(queue.songs[0]);
                     }
                 })
-                .on('error', err => {
+                .on('error', async err => {
+           
+                    message.client.queue.delete(message.guild.id);
+                    await channel.leave();
+
                     const errorEmbed = new MessageEmbed().setColor('#ff0000').setTitle('!!! ERROR !!!').setDescription(`${err.message} \nPlease contact Developer`);
-                    message.channel.send(errorEmbed);
+                    await message.channel.send(errorEmbed);
                 });
 
             const playEmbed = new MessageEmbed().setColor('#ff00c8').setTitle(`:play_pause: :play_pause: :play_pause:  ***>>>PLAYING<<<***  :poop: ${song.title} :poop:`);
