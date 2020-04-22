@@ -10,7 +10,7 @@ module.exports = {
     cooldown: 5,
     args: true,
     async run(message, args){
-        const {channel} = message.member.voice;
+        const {channel} = await message.member.voice;
 
         if(!channel) return message.channel.send('```Vô room đi con đũy```');
 
@@ -44,7 +44,7 @@ module.exports = {
         let songList;
         await getYoutubeSong(args).then(songs => songList = songs).catch(err => console.log(err));
 
-        let serverQueue = message.client.queue.get(message.guild.id);
+        let serverQueue = await message.client.queue.get(message.guild.id);
         
         if(serverQueue){
             if(songList.length > 0){
@@ -114,18 +114,18 @@ module.exports = {
             }); 
             */
             dispatcher
-                .on('finish', () =>{
+                .on('finish', async () =>{
                     if(queue.loop > 0){
-                        play(queue.songs[0]);
+                        await play(queue.songs[0]);
                         queue.loop--;
                     }else{
-                        queue.songs.shift();
+                        await queue.songs.shift();
                         play(queue.songs[0]);
                     }
                 })
                 .on('error', async err => {
            
-                    message.client.queue.delete(message.guild.id);
+                    await message.client.queue.delete(message.guild.id);
                     await channel.leave();
 
                     const errorEmbed = new MessageEmbed().setColor('#ff0000').setTitle('!!! ERROR !!!').setDescription(`${err.message} \nPlease contact Developer`);
@@ -144,7 +144,7 @@ module.exports = {
         try{
             const connection = await channel.join();
             queueConstruct.connection = connection;
-            play(queueConstruct.songs[0]);
+            await play(queueConstruct.songs[0]);
 
 
         }catch(err){
