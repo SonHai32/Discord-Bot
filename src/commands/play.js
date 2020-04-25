@@ -31,7 +31,7 @@ module.exports = {
                     }).catch(err => reject(err));
                 }
                 youtube.searchVideos(args).then(val =>{
-                    reslove({
+                    if(val) reslove({
                         id: val[0].id,
                         title: val[0].title,
                         url: `https://www.youtube.com/watch?v=${val[0].id}`,
@@ -42,7 +42,11 @@ module.exports = {
             });
         };
         let songList;
-        await getYoutubeSong(args).then(songs => songList = songs).catch(err => console.log(err));
+        await getYoutubeSong(args).then(songs => songList = songs).catch( async err => {
+            const notfoundMessage = new MessageEmbed().setColor('#00ffff').setTitle('!!!ERROR : NOT FOUND ').setDescription(err.message);
+            return await message.channel.send(notfoundMessage);
+        });
+        if(!songList) return;
 
         let serverQueue = await message.client.queue.get(message.guild.id);
         
@@ -57,12 +61,20 @@ module.exports = {
                         description: song.description
                     });
                 }
-                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.playing ? serverQueue.songs.length - 1 : serverQueue.songs.length }`);
-                return await message.channel.send(songAddedEmbed);
+                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Playlist : ${songList[0].title}\nĐã được thêm vào`);
+
+                const queueEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.length - 1}`);
+
+                await message.channel.send(songAddedEmbed);
+                return await message.channel.send(queueEmbed);
             }else {
                 serverQueue.songs.push(songList);
-                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Bài Hát : ${songList.title}\nĐã được thêm vào \n:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.playing ? serverQueue.songs.length - 1: serverQueue.songs.length}`);
-                return await message.channel.send(songAddedEmbed);
+                const songAddedEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:musical_note: :musical_note: :musical_note:  Bài Hát : ${songList.title}\nĐã được thêm vào`);
+             
+                const queueEmbed = new MessageEmbed().setColor('#00ffff').setTitle(`:twisted_rightwards_arrows: :twisted_rightwards_arrows: :twisted_rightwards_arrows:  Hàng đợi : ${serverQueue.songs.length - 1}`);
+
+                await message.channel.send(songAddedEmbed);
+                return message.channel.send(queueEmbed);
             }
         }
 
