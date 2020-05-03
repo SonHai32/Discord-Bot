@@ -30,7 +30,13 @@ module.exports = {
                             .catch(err => reject(err));
                     }).catch(err => reject(err));
                 }
-                youtube.searchVideos(args).then(val =>{
+                let song = args;
+                if(args.includes('https')){
+                    const youtubeIdRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi ;
+                    song = args.split(youtubeIdRegex)[1];
+                    if(!song) reject(new Error('Not Found'));
+                }
+                youtube.searchVideos(song).then(val =>{
                     if(val) reslove({
                         id: val[0].id,
                         title: val[0].title,
