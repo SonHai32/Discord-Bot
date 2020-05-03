@@ -38,11 +38,11 @@ module.exports = {
                     
                     youtube.getVideoByID(song).then(val =>{
                         if(val) reslove({
-                            id: val[0].id,
-                            title: val[0].title,
-                            url: `https://www.youtube.com/watch?v=${val[0].id}`,
-                            image: val[0].thumbnails.high.url,
-                            description: val[0].description
+                            id: val.id,
+                            title: val.title,
+                            url: `https://www.youtube.com/watch?v=${val.id}`,
+                            image: val.thumbnails.high.url,
+                            description: val.description
                         });
                         else reject(new Error('Not Found'))
                     }).catch(err => reject(err));
