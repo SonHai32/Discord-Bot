@@ -34,7 +34,19 @@ module.exports = {
                 if(args.includes('https')){
                     const youtubeIdRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi ;
                     song = args.split(youtubeIdRegex)[1];
-                    if(!song) reject(new Error('Not Found'));
+                    if(!song) return reject(new Error('Not Found'));
+                    
+                    youtube.getVideoByID(song).then(val =>{
+                        if(val) reslove({
+                            id: val[0].id,
+                            title: val[0].title,
+                            url: `https://www.youtube.com/watch?v=${val[0].id}`,
+                            image: val[0].thumbnails.high.url,
+                            description: val[0].description
+                        });
+                        else reject(new Error('Not Found'))
+                    }).catch(err => reject(err));
+                    
                 }
                 youtube.searchVideos(song).then(val =>{
                     if(val) reslove({
