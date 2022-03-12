@@ -1,4 +1,5 @@
 require('dotenv').config();
+const axios = require('axios').default
 const ytdl = require('ytdl-core');
 const { MessageEmbed } = require('discord.js');
 const Youtube = require('simple-youtube-api');
@@ -48,6 +49,13 @@ module.exports = {
                     }).catch(err => reject(err));
                     
                 }
+                
+                axios.get(`https://youtube.googleapis.com/youtube/v3/search?q=start&key=${process.env.YT_TOKEN}`, {headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${process.env.YT_TOKEN}`
+                } }).then((val) =>{
+                    console.log(val);
+                })
                 youtube.searchVideos(song).then(val =>{
                     if(val) reslove({
                         id: val[0].id,
